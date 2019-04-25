@@ -1,0 +1,5 @@
+a = open("text.txt")
+b = a.read()
+print(b.split("\n"))
+c = dict()
+set().intersection()
