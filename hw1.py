@@ -49,12 +49,12 @@ def buttCallback(pressed):
 
 
 def tempListener():
-    global L22, times
+    global L22
     cel, fer = temp_s.read_temp()
     print("read temp")
     if(cel != None and fer != None):
         if cel >= TEMP_THRESH:
-            times = 0
+            
             return True, {"cel": cel}
         else:
             return False, {"cel": None}
@@ -63,6 +63,8 @@ def tempListener():
 
 def tempCallback(cel):
     e2.removeListener(L22)
+    global times
+    times = 0
     buzzer.buzz(440)
     print("cel", cel)   
 
