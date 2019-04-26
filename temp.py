@@ -18,10 +18,9 @@ class Temp_sensor:
         lines = f.readlines()
         f.close()
         return lines
-    def read_temp(self):
-        t=time.perf_counter()
-        lines = self._read_temp_raw()
-        print(time.perf_counter()-t)
+    def read_temp(self):        
+        
+        lines = self._read_temp_raw()        
         while lines[0].strip()[-3:] != 'YES':
             time.sleep(0.2)
             lines = self._read_temp_raw()    

@@ -13,28 +13,37 @@ class Buzzer(threading.Thread):
         self.isStop = False        
         GPIO.setup(pin,GPIO.OUT)
         self.pin = pin
+        self.buzzer=None
+        self.timer=None
         pass
     
     def beep(self, duration, freq):
-        self.buzzer=GPIO.PWM(self.pin, freq)
-        self.buzzer.start(50)
+        if self.buzzer == None:
+            self.buzzer=GPIO.PWM(self.pin, freq)
+            self.buzzer.start(50)
+        else:
+            self.buzzer.ChangeFrequency(freq)
         self.timer = threading.Timer(duration, self.stop)
         self.timer.start()        
         pass
 
     
     def buzz(self, freq):
-        self.buzzer=GPIO.PWM(self.pin, freq)
-        self.buzzer.start(50)
+        if self.buzzer == None:
+            self.buzzer=GPIO.PWM(self.pin, freq)
+            self.buzzer.start(50)
+        else:
+            self.buzzer.ChangeFrequency(freq)
+        
 
     def stop(self):
         self.buzzer.stop()
-        self.timer.cancel()
+        if self.timer != None:
+            self.timer.cancel()
         pass
 
     def force_stop(self):
-        self.stop()
-        self.timer.cancel()
+        self.stop()        
         pass
 
 # buzz = Buzzer(24)
