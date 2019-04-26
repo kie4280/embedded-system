@@ -36,7 +36,6 @@ class eventListener:
         key = (id(check), id(callback), id(args_check),
                id(args_call))
         self.works[key] = content
-        self.reset()
 
         return key
 
@@ -47,7 +46,6 @@ class eventListener:
             print(key, "is not present")
             pass
 
-    def reset(self):
         pass
 
 class eventScheduler:
