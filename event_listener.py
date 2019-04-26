@@ -17,17 +17,22 @@ class eventListener:
 
         while True:
             start = time.perf_counter()
-            for _, work in self.works.items():
+            for _, work in self.works.items():               
                 
-                hasEvent, param_dict = work[0](**work[2])
-
+                eventTup = work[0](**work[2])                
+                if type(eventTup) == tuple:
+                    hasEvent, param_dict = eventTup
+                else:
+                    hasEvent=eventTup
+                    param_dict=dict()
+            
                 if hasEvent:
                     return_dict = dict(work[3])
                     if(len(param_dict)>0):
                         return_dict.update(param_dict)
                     threading.Thread(target=work[1], kwargs=return_dict).start()
                     
-            print(time.perf_counter()-start)
+            # print(time.perf_counter()-start)
             time.sleep(self.refresh_rate)
 
     def addListener(self, check, callback,
@@ -55,24 +60,25 @@ class eventScheduler:
         pass
 
 
-e = eventListener(1)
-i=0
-loop=True
-def check(a, b):
-    global i
-    i += 1
-    # print(a ,b)
-    if(i==4):
-        return True, {"a":1, "b":2}
-    else :
-        return False, {"a":1, "b":2}
+# e = eventListener(1)
+# i=0
+# loop=True
+# def check():
+#     global i
+#     i += 1
+#     # print(a ,b)
+#     if(i==4):
+#         return True, {"pressed":True}
+#     else :
+#         return False
 
-def callback(a, b):
-    print("event fired")
-    # print(a ,b)
-    global loop
-    loop=False
+# def callback(pressed):
+#     print("event fired")
+#     print(pressed)
+#     # print(a ,b)
+#     global loop
+#     loop=False
     
-e.addListener(check, callback, {"a":1, "b":2})
-while loop:
-    time.sleep(1)
+# e.addListener(check, callback)
+# while loop:
+#     time.sleep(1)

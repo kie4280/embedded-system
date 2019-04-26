@@ -9,6 +9,12 @@ if __name__ == "__main__":
     GPIO.setwarnings(False)
 
 
+def runThread():
+    for b in LED.blink_list:
+
+        pass
+       
+
 class LED:
 
     thread = threading.Thread(target=runThread, daemon=True)
@@ -37,8 +43,4 @@ class LED:
         except ValueError as e:
             pass
 
-    def runThread(self):
-        for b in LED.blink_list:
-            
-            pass
-        pass
+    

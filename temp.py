@@ -5,7 +5,7 @@ import re
 import threading
 #initialize the device
 
-class temp_sensor:
+class Temp_sensor:
     def __init__(self):
 
         os.system('sudo modprobe w1-gpio')
@@ -13,21 +13,30 @@ class temp_sensor:
         self.base_dir = '/sys/bus/w1/devices/'
         self.device_folder = glob.glob(self.base_dir + '28*')[0]
         self.device_file = self.device_folder + '/w1_slave'
-    def read_temp_raw(self):
+    def _read_temp_raw(self):
         f = open(self.device_file, 'r')
         lines = f.readlines()
         f.close()
         return lines
     def read_temp(self):
-        lines = self.read_temp_raw()
-        t = threading.Timer(0.2, readfile)
+        t=time.perf_counter()
+        lines = self._read_temp_raw()
+        print(time.perf_counter()-t)
+        while lines[0].strip()[-3:] != 'YES':
+            time.sleep(0.2)
+            lines = self._read_temp_raw()    
+    
+        # t = threading.Timer(0.2, readfile)
 
-        def readfile(lines):
+        # def readfile(lines):
 
-            if lines[0].strip()[-3:] != 'YES':
-                lines = self.read_temp_raw()               
-                t.start()
-        readfile(lines)
+        #     if lines[0].strip()[-3:] != 'YES':
+        #         lines = self._read_temp_raw()               
+        #         t.start()
+        # readfile(lines)
+
+    # above are some confusing code!!
+
         # equals_pos = lines[1].find('t=')
         match = re.search(r't=([0-9]*)\n*', lines[1])
         if match != None:

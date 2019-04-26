@@ -14,20 +14,19 @@ class Button:
         self.prev_state=0
         GPIO.setup(pin, GPIO.IN)
     def getState(self):
-        if self.statetime==-1:
-            self.statetime = time.perf_counter()
-        if (time.perf_counter()-self.statetime) > 0.05:
-            return GPIO.input(self.pin)
-        return 
-
-
-while True:
-    if (GPIO.input(10) == False):
-        print ("button pressed")
-        os.system("date")
-        print(GPIO.input(10))
-        time.sleep(5)
-    else:
-        os.system('clear')
-        print("press the button..")
-        time.sleep(1)
+        # if self.statetime==-1:
+        #     self.statetime = time.perf_counter()
+        # if (time.perf_counter()-self.statetime) > 0.01:
+        #     self.prev_state=GPIO.input(self.pin)
+        #     self.statetime=time.perf_counter()
+        #     return self.prev_state
+        # else:
+        #     pass
+        
+        butt_curr = GPIO.input(self.pin)
+        # print("button", butt_curr)
+        if self.prev_state != butt_curr:
+            self.prev_state = butt_curr
+            return True, {"pressed":butt_curr }
+        
+        return False, {"pressed":butt_curr }

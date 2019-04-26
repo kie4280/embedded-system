@@ -37,9 +37,9 @@ class Buzzer(threading.Thread):
         self.timer.cancel()
         pass
 
-buzz = Buzzer(24)
-buzz.beep(2, 440)
-time.sleep(5)
-buzz.beep(1, 880)
-time.sleep(5)
-buzz.stop()
+# buzz = Buzzer(24)
+# buzz.beep(2, 440)
+# time.sleep(5)
+# buzz.beep(1, 880)
+# time.sleep(5)
+# buzz.stop()

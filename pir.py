@@ -20,19 +20,19 @@ class PIR_sensor:
             self.Current_State = 0   
             time.sleep(0.01)
 
-    def readState(self):
+    def getState(self):
     
         # Read PIR state
         self.Current_State = GPIO.input(self.GPIO_PIR)
         if self.Current_State == 1 and self.Previous_State == 0:
         # PIR is triggered
-            # print ("  Motion detected!")
+            print ("  Motion detected!")
                    # Record previous state            
             self.Previous_State = 1
             return True
         elif self.Current_State == 0 and self.Previous_State == 1:
             # PIR has returned to ready state
-            # print ("  Ready")
+            print ("  Ready")
             self.Previous_State = 0
             # Wait for 10 milliseconds
             # sleep(0.01)
