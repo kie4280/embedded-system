@@ -15,27 +15,32 @@ class eventListener:
         self.workQueue = queue.Queue()
         self.dict_lock = threading.Lock()
         self.queue_lock = threading.Lock()
+        self.workEvent = threading.Event()
         self.thread_listen = threading.Thread(target=self.runListener, daemon=True)
         self.thread_listen.start()
         self.thread_callback = threading.Thread(target=self.runCallback, daemon=True)
-        self.thread_callback.start()
-        
+        self.thread_callback.start()     
         
 
         pass
 
     def runCallback(self):
         while self.loop:
+            self.workEvent.wait()
             self.queue_lock.acquire()
-            try:
-                if not self.workQueue.empty():
-                    call, kwargs = self.workQueue.get()
-                    self.workQueue.task_done()
-                    call(**kwargs)
+            try:                
+                call, kwargs = self.workQueue.get()
+                self.workQueue.task_done()
+                call(**kwargs)
+
             except Exception as e:
                 print(e)
             finally:
-                self.queue_lock.release()
+                if self.workQueue.qsize() == 0:
+                    self.workEvent.clear()
+                if self.queue_lock.locked():
+                    self.queue_lock.release()
+            
             pass
         
     def addCallback(self, callback, kwargs):
@@ -45,7 +50,9 @@ class eventListener:
         except:
             pass
         finally:
-            self.queue_lock.release()
+            self.workEvent.set()
+            if self.queue_lock.locked():
+                self.queue_lock.release()
         
 
     def runListener(self):
@@ -54,6 +61,9 @@ class eventListener:
         while self.loop:
 
             start = time.perf_counter()
+            self.queue_lock.acquire()                      
+                
+            self.queue_lock.release()
             self.dict_lock.acquire()
             try:
                 for _, work in self.listenerWorks.items():
@@ -73,10 +83,14 @@ class eventListener:
                         # threading.Thread(
                         #     target=work[1], kwargs=return_dict).start()
                         self.addCallback(work[1], return_dict)
+                        
+                        # threading event 
+
             except:
                 pass
-            finally:
-                self.dict_lock.release()
+            finally:                
+                if self.dict_lock.locked():
+                    self.dict_lock.release()
             # print(time.perf_counter()-start)
             time.sleep(self.refresh_rate)
 
@@ -87,7 +101,8 @@ class eventListener:
                id(args_call))
         self.dict_lock.acquire()
         self.listenerWorks[key] = content
-        self.dict_lock.release()
+        if self.dict_lock.locked():
+            self.dict_lock.release()
 
         return key
 

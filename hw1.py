@@ -28,11 +28,12 @@ pir = PIR_sensor(GPIO_PIR)
 pir.initialize()
 temp_s = Temp_sensor()
 buzzer = Buzzer(GPIO_BUZZ)
+L22=None
 
 times=0
 
 def pirCallback():
-    global times
+    global times, buzzer
     times+=1
     if(times>=3):
         buzzer.stop()
@@ -45,11 +46,12 @@ def buttCallback(pressed):
     
     print("pressed", pressed)
     if not pressed:
-        L22 = e2.addListener(tempListener, tempCallback)
+        # L22 = e2.addListener(tempListener, tempCallback)
+        pass
 
 
 def tempListener():
-    global L22
+    
     cel, fer = temp_s.read_temp()
     print("read temp")
     if(cel != None and fer != None):
@@ -62,8 +64,9 @@ def tempListener():
         return False, {"cel": None}
 
 def tempCallback(cel):
+    global times, buzzer, L22
     e2.removeListener(L22)
-    global times
+    
     times = 0
     buzzer.buzz(440)
     print("cel", cel)   
@@ -72,8 +75,6 @@ def tempCallback(cel):
 button = Button(GPIO_BUTT)
 L11=e1.addListener(pir.getState, pirCallback)
 L12=e1.addListener(button.getState, buttCallback)
-L22=None
-
 
 while loop:
     time.sleep(1)
