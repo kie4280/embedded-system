@@ -26,10 +26,10 @@ class LED:
         LED.thread.start()
 
     def on(self):
-        GPIO.output(18, GPIO.HIGH)
+        GPIO.output(self.pin, GPIO.HIGH)
 
     def off(self):
-        GPIO.output(18, GPIO.LOW)
+        GPIO.output(self.pin, GPIO.LOW)
 
     def blink(self, interval, duration=0.5):
         self.led = (self.pin, interval, duration)

@@ -37,7 +37,7 @@ def pirCallback():
     times+=1
     if(times>=3):
         buzzer.stop()
-    print("motion")
+    # print("motion")
     pass
 
 
@@ -46,7 +46,7 @@ def buttCallback(pressed):
     
     print("pressed", pressed)
     if not pressed:
-        # L22 = e2.addListener(tempListener, tempCallback)
+        L22 = e2.addListener(tempListener, tempCallback)
         pass
 
 

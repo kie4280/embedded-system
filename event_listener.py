@@ -82,7 +82,7 @@ class eventListener:
                             return_dict.update(param_dict)
                   
                         self.addCallback(work[1], return_dict)
-                        print("add callback")                      
+                        # print("add callback")                      
 
             except:
                 pass
@@ -131,39 +131,36 @@ class eventListener:
         pass
 
 
-class eventScheduler:
-    def __init__(self):
-        pass
+# below is for testing
+
+if __name__ == "__main__":
+    e = eventListener(0.5, 3)
+    i = 0    
+    loop = True
+    L1 = None
+
+    def check():
+        global i
+        i += 1
+        # print(a ,b)
+        if(i == 4):
+            i = 0
+            return True, {"pressed": True}
+        else:
+            return False
 
 
-e = eventListener(0.5, 3)
-i = 0
+    def callback(pressed):
+        global loop, L1, i
 
-loop = True
+        print("event fired")      
 
-L1 = None
+        for a in range(10):
+            time.sleep(1)
+        # print(a ,b)    
 
-
-def check():
-    global i
-    i += 1
-    # print(a ,b)
-    if(i == 4):
-        i = 0
-        return True, {"pressed": True}
-    else:
-        return False
-
-
-def callback(pressed):
-    global loop, L1, i
-    
-    print("event fired")      
-
-    for a in range(10):
+    L1 = e.addListener(check, callback)
+    while loop:
         time.sleep(1)
-    # print(a ,b)    
 
-L1 = e.addListener(check, callback)
-while loop:
-    time.sleep(1)
+
