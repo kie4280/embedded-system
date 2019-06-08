@@ -1,20 +1,32 @@
 from scipy.optimize import fsolve
 import math
 
+def dist2(a1, a2):
+
+    sum = 0
+    for s in range(len(a1)):
+        sum += (a1[s]-a2[s])**2 
+    return sum
+
 v = 340
-t1 = math.sqrt(10016)/v
-t2 = math.sqrt(10036)/v
-t3 = math.sqrt(10136)/v
-t4 = math.sqrt(10116)/v
+m1 = (0,0,0)
+m2 = (10,0,0)
+m3 = (0,10,0)
+m4 = (0,0,10)
+t = (10,10,10)
+t1 = math.sqrt(dist2(t, m1))/v
+t2 = math.sqrt(dist2(t, m2))/v
+t3 = math.sqrt(dist2(t, m4))/v
+t4 = math.sqrt(dist2(t, m3))/v
 
-(x1, y1, z1) = (0, 10, 0)
-(x2, y2, z2) = (10, 10, 0)
-(x3, y3, z3) = (10, 0, 0)
-(x4, y4, z4) = (0, 0, 0)
+(x1, y1, z1) = (0, 0, 0)
+(x2, y2, z2) = (10, 0, 0)
+(x3, y3, z3) = (0, 0, 10)
+(x4, y4, z4) = (0, 10, 0)
 
-b = v * (t2 - t1)
-c = v * (t3 - t1)
-d = v * (t4 - t1)
+b = v * (t1-t2)
+c = v * (t1-t3)
+d = v * (t1-t4)
 print(b, c, d)
 
 

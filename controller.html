@@ -1,0 +1,53 @@
+<!doctype html>
+
+<html>
+<style>
+    .slider#pitch {
+        transform: rotate(270deg);
+        width: 6vw;
+
+    }
+
+    table,
+    td,
+    tr {
+
+        /* border: 1px solid black; */
+
+        /* border-spacing: 3vw */
+        padding: 3vw
+    }
+</style>
+
+<head>
+    <title>RPi panel</title>
+</head>
+
+<body>
+    <table>
+
+        <tr>
+            <td></td>
+            <td>
+                <b5>pitch</b5>
+                <div class="slidecontainer">
+
+                    <input type="range" min="1" max="100" value="50" class="slider" id="pitch"
+                        aria-orientation="vertical">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="100" value="50" class="slider" id="yaw">
+                </div>
+            </td>
+
+        </tr>
+    </table>
+
+
+</body>
+
+</html>

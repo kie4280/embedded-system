@@ -1,6 +1,7 @@
 import threading
 import time
 import queue
+import atexit
 
 
 class eventListener:
@@ -17,15 +18,15 @@ class eventListener:
         self.queue_lock = threading.Lock()
         self.workEvent = threading.Event()
         self.thread_listen = threading.Thread(
-            target=self.runListener, daemon=True)
+            target=self._runListener, daemon=True)
         self.thread_listen.start()
         self.thread_callback = threading.Thread(
-            target=self.runCallback, daemon=True)
+            target=self._runCallback, daemon=True)
         self.thread_callback.start()
-
+        atexit.register(self.stop)
         pass
 
-    def runCallback(self):
+    def _runCallback(self):
         while self.loop:
             self.workEvent.wait()
             # self.queue_lock.acquire()
@@ -46,20 +47,20 @@ class eventListener:
 
             pass
 
-    def addCallback(self, callback, kwargs):
+    def _addCallback(self, callback, kwargs):
         self.queue_lock.acquire()
         try:
             self.workQueue.put((callback, kwargs), False)
         except queue.Full:
-            print("Max queue size reached, the callback takes too long to run. \
-            Another thread may be needed.")            
+            print("Max queue size reached, the callback takes too long " 
+            + "to run. Another thread may be needed.")            
             pass
         finally:
             self.workEvent.set()
             if self.queue_lock.locked():
                 self.queue_lock.release()
 
-    def runListener(self):
+    def _runListener(self):
         # print(time.perf_counter())
 
         while self.loop:
@@ -81,7 +82,7 @@ class eventListener:
                         if(len(param_dict) > 0):
                             return_dict.update(param_dict)
                   
-                        self.addCallback(work[1], return_dict)
+                        self._addCallback(work[1], return_dict)
                         # print("add callback")                      
 
             except:
@@ -123,11 +124,12 @@ class eventListener:
             self.dict_lock.release()
 
     def __del__(self):
-        self.loop = False
+        self.stop()
 
         pass
 
-    def reset(self):
+    def stop(self):
+        self.loop = False
         pass
 
 
@@ -136,6 +138,7 @@ class eventListener:
 if __name__ == "__main__":
     e = eventListener(0.5, 3)
     i = 0    
+    l = 0
     loop = True
     L1 = None
 
@@ -149,6 +152,15 @@ if __name__ == "__main__":
         else:
             return False
 
+    def check2():
+        global l
+        l += 1
+        # print(a ,b)
+        if(l == 4):
+            l = 0
+            return True, {"pressed": True}
+        else:
+            return False
 
     def callback(pressed):
         global loop, L1, i
@@ -156,10 +168,12 @@ if __name__ == "__main__":
         print("event fired")      
 
         for a in range(10):
-            time.sleep(1)
+            time.sleep(0.5)
         # print(a ,b)    
 
     L1 = e.addListener(check, callback)
+    e2 = eventListener(0.1)
+    L2 = e2.addListener(check2, callback)
     while loop:
         time.sleep(1)
 
